@@ -10,6 +10,7 @@ function App() {
   const [timeDuration, setTimeDuration] = useState("");
   const [amount, setAmount] = useState("");
   const[fundFundName, setFundFundName] = useState("");
+  const [withdrawFundName, setWithdrawFundName] = useState("");
 
   useEffect(() => {
     async function initialize() {
@@ -62,6 +63,20 @@ function App() {
 
       } catch(error) {
         console.error("Error on funding: ", error);
+      };
+    };
+  };
+
+  const withdrawOrRefund = async (createFundName) => {
+    if (window.ethereum !== undefined && contract) {
+      try {
+        const tx = await contract.withdrawOrRefund(createFundName);
+        await tx.wait();
+        window.alert("withdrawn or refunded successfully.");
+
+        setWithdrawFundName("");
+      } catch (error) {
+        console.error("Error withdrawing or refunding: ", error);
       };
     };
   };
