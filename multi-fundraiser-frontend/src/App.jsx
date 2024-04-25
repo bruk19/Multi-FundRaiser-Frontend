@@ -89,6 +89,17 @@ function App() {
     };
   };
 
+  const whoFund = async (fundersInput) => {
+    if (contract) {
+      try {
+        const fundersList = await contract.whoFund(fundersInput);
+        setFunders(fundersList);
+      } catch (error) {
+        console.error("Error retrieving funders: ", error);
+      };
+    };
+  };
+
   return (
     <>
       <div>
