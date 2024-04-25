@@ -17,6 +17,12 @@ if (window.ethereum == null) {
     web3 = new ethers.BrowserProvider(window.ethereum)
     signer = await web3.getSigner();
 
+    const networkId = (await web3.getNetwork()).chainId;
+    if (networkId != 11155111) {
+       window.alert("Please switch to Polygon Sepolia Testnet");
+     }
+    await window.ethereum.request({ method: "eth_requestAccounts" });
+
 }
 }
 
