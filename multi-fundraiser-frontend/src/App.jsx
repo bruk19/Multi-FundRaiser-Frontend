@@ -2,8 +2,9 @@ import { useState, useEffect } from "react";
 import { ethers } from "ethers";
 import { abi, contractAddress } from "./constants/fundRaiser";
 import { getWeb3, setupWeb3 } from "./web3";
+// import { Web3Provider } from "ethers/providers";
 
-function App() {
+const App = () => {
 
   const [contract, setContract] = useState(null);
   const [goal, setGoal] = useState("");
@@ -12,44 +13,53 @@ function App() {
   const[fundFundName, setFundFundName] = useState("");
   const [withdrawFundName, setWithdrawFundName] = useState("");
   const [funds, setFunds] = useState([]);
+  const [whoFundName, setWhoFundName] = useState("");
+  const [funders, setFunders] = useState([]);
+  const [createFundName, setCreateFundName] = useState("");
+  
 
   useEffect(() => {
     async function initialize() {
       await setupWeb3();
-      const web3Instance = getWeb3();
-      console.log(web3Instance);
-
+      const web3Instance = getWeb3(); // Initialize Web3 provider.
+      console.log(web3Instance)
+      // Paste your deployed-contract address
       const signer = await web3Instance.getSigner();
       console.log(signer)
       const contractInstance = new ethers.Contract(contractAddress, abi, signer);
-      setContract(contractInstance);
+       setContract(contractInstance);
 
+      // Fetch the initial list of funds as soon as the component mounts.
       listOfFunds();
+
     }
     initialize();
   }, []);
+   
 
-  const createFundRaise = async (createFundName, goal, timeDuration) => {
-    if (window.ethereum !== undefined) {
-      try {
-        console.log(contract)
-        const tx = await contract.createFundRaise(createFundName, goal, timeDuration);
-        await tx.wait();
+  // Function to add a new fundraiser to the contract.
+const createFundRaise = async (createFundName, goal, timeDuration) => {
+  if (window.ethereum !== undefined) {
+       try {
+    console.log(contract)
+    const tx = await contract.createFundRaise(createFundName, goal, timeDuration);
+    await tx.wait();
+    // Display a success message
+    window.alert("Fundraiser created successfully.");
+    // Additional code to update UI or perform other actions after successful transaction
+    listOfFunds();
 
-        window.alert("Fundraiser created successfully.");
+    setCreateFundName("");
+    setGoal("");
+    setTimeDuration("");
+    } catch (error) {
+         console.error("the fundraiser is not created: ", error);
+    }
 
-        listOfFunds();
+}
+};
 
-        setCreateFundName("");
-        setGoal("");
-        setTimeDuration("");
-
-      } catch (error) {
-        console.error("The fundraiser is not created: ", error);
-      };
-    };
-  };
-
+  // Function to fund a specific fundraiser.
   const fund = async (fundFundName, amount) => {
     if (window.ethereum !== undefined && contract) {
       try {
@@ -57,49 +67,53 @@ function App() {
           value: ethers.parseEther(amount),
         });
         await tx.wait();
-        window.alert("Funded successfully");
+        window.alert("Funded successfully.");
 
         setFundFundName("");
         setAmount("");
-
-      } catch(error) {
-        console.error("Error on funding: ", error);
-      };
-    };
+      } catch (error) {
+        console.error("Error funding: ", error);
+      }
+    }
   };
 
+  // Function to withdraw or refund funds from a specific fundraiser.
   const withdrawOrRefund = async (createFundName) => {
     if (window.ethereum !== undefined && contract) {
       try {
-        const tx = await contract.withdrawOrRefund(createFundName);
+        const tx = await contract.withdrawnOrRefund(createFundName);
         await tx.wait();
-        window.alert("withdrawn or refunded successfully.");
+        window.alert("Withdrawn or refunded successfully.");
 
+        // Refresh the list of funds after withdrawing or refunding.
         setWithdrawFundName("");
       } catch (error) {
         console.error("Error withdrawing or refunding: ", error);
-      };
-    };
+      }
+    }
   };
 
+  // Function to retrieve and display the list of funds from the contract.
   const listOfFunds = async () => {
     if (contract) {
-      const allFunds = await contract.listOfFunds();
+      const allFunds = await contract.listofFunds();
       setFunds(allFunds);
-    };
+    }
   };
 
-  const whoFund = async (fundersInput) => {
+  // Function to retrieve and display the list of funders for a specific fundraiser.
+  const whoFund = async (fundersInput) => { // Use fundersInput as the parameter
     if (contract) {
       try {
         const fundersList = await contract.whoFund(fundersInput);
         setFunders(fundersList);
       } catch (error) {
         console.error("Error retrieving funders: ", error);
-      };
-    };
+      }
+    }
   };
-return (
+
+  return (
     <div className="App">
       <h1>Fundraiser</h1>
       <div className="input-field">
