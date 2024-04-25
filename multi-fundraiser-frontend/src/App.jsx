@@ -99,14 +99,87 @@ function App() {
       };
     };
   };
-
-  return (
-    <>
-      <div>
-        <h1>Fund Raiser</h1>
+return (
+    <div className="App">
+      <h1>Fundraiser</h1>
+      <div className="input-field">
+        <input
+          type="text"
+          placeholder="Fund Name"
+          value={createFundName}
+          onChange={(e) => setCreateFundName(e.target.value)}
+        />
+        <input
+          type="text"
+          placeholder="Enter Goal"
+          value={goal}
+          onChange={(e) => setGoal(e.target.value)}
+        />
+        <input
+          type="text"
+          placeholder="Enter Time Duration"
+          value={timeDuration}
+          onChange={(e) => setTimeDuration(e.target.value)}
+        />
+        <button onClick={() => createFundRaise(createFundName, goal, timeDuration)}>Create Fundraiser</button>
       </div>
-    </>
-  )
-}
+      <div className="input-field">
+        <input
+          type="text"
+          placeholder="Fund Name"
+          value={fundFundName}
+          onChange={(e) => setFundFundName(e.target.value)}
+        />
+        <input
+          type="text"
+          placeholder="Enter Amount to Fund"
+          value={amount}
+          onChange={(e) => setAmount(e.target.value)}
+        />
+        <button onClick={() => fund(fundFundName, amount)}>Fund</button>
+      </div>
+      <div className="input-field">
+        <input
+          type="text"
+          placeholder="Fund Name"
+          value={withdrawFundName}
+          onChange={(e) => setWithdrawFundName(e.target.value)}
+        />
+        <button onClick={() => withdrawOrRefund(withdrawFundName)}>
+          Withdraw or Refund
+        </button>
+      </div>
+   <div>
+        <input
+          type="text"
+          placeholder="Fund Name"
+          value={whoFundName} // Use fundFundName here
+          onChange={(e) => setWhoFundName(e.target.value)} // Use setFundFundName here
+        />
+        <button onClick={() => whoFund(whoFundName)}>Who Funded</button> {/* Use fundFundName here */}
+      </div>
+      <div className="input-field">
+        <button onClick={listOfFunds}>List of Funds</button> 
+        {/* <button onClick={() => whoFund(fundFundName)}>Who Funded</button> */}
+      </div>
+      <h4>List of Funds</h4>
+      <ul>
+        {funds.map((fund, index) => (
+          <li key={index}>
+            <span>{fund}</span>
+          </li>
+        ))}
+      </ul>
+      <h4>Who Funded</h4>
+      <ul>
+        {funders.map((funder, index) => (
+          <li key={index}>
+            <span>{funder}</span>
+          </li>
+        ))}
+      </ul>
+    </div>
+  );
+};
 
-export default App
+export default App;
