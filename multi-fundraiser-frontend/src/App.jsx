@@ -5,6 +5,10 @@ import { getWeb3, setupWeb3 } from "./web3";
 
 function App() {
 
+  const [contract, setContract] = useState(null);
+  const [goal, setGoal] = useState("");
+  const [timeDuration, setTimeDuration] = useState("");
+
   useEffect(() => {
     async function initialize() {
       await setupWeb3();
@@ -20,6 +24,27 @@ function App() {
     }
     initialize();
   }, []);
+
+  const createFundRaise = async (createFundName, goal, timeDuration) => {
+    if (window.ethereum !== undefined) {
+      try {
+        console.log(contract)
+        const tx = await contract.createFundRaise(createFundName, goal, timeDuration);
+        await tx.wait();
+
+        window.alert("Fundraiser created successfully.");
+
+        listOfFunds();
+
+        setCreateFundName("");
+        setGoal("");
+        setTimeDuration("");
+
+      } catch (error) {
+        console.error("The fundraiser is not created: ", error);
+      };
+    };
+  };
 
   return (
     <>
