@@ -11,6 +11,7 @@ function App() {
   const [amount, setAmount] = useState("");
   const[fundFundName, setFundFundName] = useState("");
   const [withdrawFundName, setWithdrawFundName] = useState("");
+  const [funds, setFunds] = useState([]);
 
   useEffect(() => {
     async function initialize() {
@@ -78,6 +79,13 @@ function App() {
       } catch (error) {
         console.error("Error withdrawing or refunding: ", error);
       };
+    };
+  };
+
+  const listOfFunds = async () => {
+    if (contract) {
+      const allFunds = await contract.listOfFunds();
+      setFunds(allFunds);
     };
   };
 
