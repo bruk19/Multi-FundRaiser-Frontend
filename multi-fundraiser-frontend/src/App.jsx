@@ -8,6 +8,8 @@ function App() {
   const [contract, setContract] = useState(null);
   const [goal, setGoal] = useState("");
   const [timeDuration, setTimeDuration] = useState("");
+  const [amount, setAmount] = useState("");
+  const[fundFundName, setFundFundName] = useState("");
 
   useEffect(() => {
     async function initialize() {
@@ -42,6 +44,24 @@ function App() {
 
       } catch (error) {
         console.error("The fundraiser is not created: ", error);
+      };
+    };
+  };
+
+  const fund = async (fundFundName, amount) => {
+    if (window.ethereum !== undefined && contract) {
+      try {
+        const tx = await contract.fund(fundFundName, {
+          value: ethers.parseEther(amount),
+        });
+        await tx.wait();
+        window.alert("Funded successfully");
+
+        setFundFundName("");
+        setAmount("");
+
+      } catch(error) {
+        console.error("Error on funding: ", error);
       };
     };
   };
